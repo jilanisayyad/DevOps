@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Kubernetes Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #e86b5a;
+            font-size: 36px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #000000;
+            font-size: 18px;
+        }
+
+        select {
+            margin-right: 10px;
+            background-color: #e9ecef;
+            color: #6c757d;
+            font-size: 16px;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #2cb78b;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #e86b5a;
+            color: #fff;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        td {
+            font-size: 16px;
+            color: #000000;
+            padding: 8px;
+        }
+
+
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        button:hover {
+            background-color: #00e1ff;
+        }
+
+        select:hover {
+            background-color: #e9ecef;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Kubernetes Dashboard</h1>
+    <form id="namespaceForm">
+        <label for="namespace">Namespace:</label>
+        <select id="namespace" name="namespace"></select>
+        <button type="submit">Get Deployments</button>
+    </form>
+    <table id="deploymentsTable">
+        <h1>Deployment</h1>
+        <thead>
+            <tr>
+                <th>Namespace</th>
+                <th>Name</th>
+                <th>Ready</th>
+                <th>Available</th>
+                <th>Up-to-date</th>
+            </tr>
+        </thead>
+        <tbody id="deploymentsList"></tbody>
+    </table>
+    <h1>Pods</h1>
+    <table id="PodTable">
+        <thead>
+            <tr>
+                <th>Namespace</th>
+                <th>Name</th>
+                <th>Ready</th>
+                <th>Restarts</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="PodList"></tbody>
+    </table>
+    <h1>Replicasets</h1>
+    <table id="ReplicasetTable">
+        <thead>
+            <tr>
+                <th>Namespace</th>
+                <th>Name</th>
+                <th>Ready</th>
+                <th>Desired</th>
+                <th>Current</th>
+            </tr>
+        </thead>
+        <tbody id="ReplicasetList"></tbody>
+    </table>
+    <h1>Services</h1>
+    <table id="ServiceTable">
+        <thead>
+            <tr>
+                <th>Namespace</th>
+                <th>Name</th>
+                <th>ClusterIP</th>
+                <th>Type</th>
+                <th>ExternalIP</th>
+                <th>Port</th>
+            </tr>
+        </thead>
+        <tbody id="ServicesList"></tbody>
+    </table>
+    <script>
+        fetch("/api/v1/namespaces/")
+            .then(response => response.json())
+            .then(data => {
+                const namespaceSelect = document.getElementById("namespace");
+                data.forEach(namespace => {
+                    const option = document.createElement("option");
+                    option.value = namespace;
+                    option.textContent = namespace;
+                    namespaceSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error getting namespaces:", error));
+
+        const fetchDeployments = (namespace) => {
+            fetch(`/api/v1/deployments/namespace/${namespace}`)
+                .then(response => response.json())
+                .then(data => {
+                    const deploymentsList = document.getElementById("deploymentsList");
+                    deploymentsList.innerHTML = "";
+                    data.forEach(deployment => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${deployment.namespace}</td>
+                            <td>${deployment.name}</td>
+                            <td>${deployment.ready}</td>
+                            <td>${deployment.available}</td>
+                            <td>${deployment.up_to_date}</td>
+                        `;
+                        deploymentsList.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error getting deployments:", error));
+        };
+
+        const fetchPods = (namespace) => {
+            fetch(`/api/v1/pods/namespace/${namespace}`)
+                .then(response => response.json())
+                .then(data => {
+                    const podsList = document.getElementById("PodList");
+                    podsList.innerHTML = "";
+                    data.forEach(pod => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${pod.namespace}</td>
+                            <td>${pod.name}</td>
+                            <td>${pod.ready}</td>
+                            <td>${pod.restarts}</td>
+                            <td>${pod.status}</td>
+                        `;
+                        podsList.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error getting pods:", error));
+        };
+
+        const fetchReplicaset = (namespace) => {
+            fetch(`/api/v1/replicasets/namespace/${namespace}`)
+                .then(response => response.json())
+                .then(data => {
+                    const replicasetList = document.getElementById("ReplicasetList");
+                    replicasetList.innerHTML = "";
+                    data.forEach(replicaset => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${replicaset.namespace}</td>
+                            <td>${replicaset.name}</td>
+                            <td>${replicaset.ready}</td>
+                            <td>${replicaset.desired}</td>
+                            <td>${replicaset.current}</td>
+                        `;
+                        replicasetList.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error getting replicasets:", error));
+        };
+
+        const fetchServices = (namespace) => {
+            fetch(`/api/v1/services/namespace/${namespace}`)
+                .then(response => response.json())
+                .then(data => {
+                    const servicesList = document.getElementById("ServicesList");
+                    servicesList.innerHTML = "";
+                    data.forEach(service => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${service.namespace}</td>
+                            <td>${service.name}</td>
+                            <td>${service.cluster_ip}</td>
+                            <td>${service.type}</td>
+                            <td>${service.external_ip}</td>
+                            <td>${service.port}</td>
+                        `;
+                        servicesList.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error getting services:", error));
+        };
+
+        document.getElementById("namespaceForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            const namespace = document.getElementById("namespace").value;
+            fetchDeployments(namespace);
+            fetchPods(namespace);
+            fetchReplicaset(namespace);
+            fetchServices(namespace);
+        });
+
+        setInterval(() => {
+            const namespace = document.getElementById("namespace").value;
+            fetchDeployments(namespace);
+            fetchPods(namespace);
+            fetchReplicaset(namespace);
+            fetchServices(namespace);
+        }, 5000); 
+    </script>
+</body>
+
+</html>

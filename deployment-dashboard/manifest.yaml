@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-dashboard
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: kubernetes-dashboard
+  template:
+    metadata:
+      labels:
+        app: kubernetes-dashboard
+    spec:
+      serviceAccount: kubernetes-dashboard
+      containers:
+        - name: kubernetes-dashboard
+          image: jilani1/kube-dashboard:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-dashboard-service
+  namespace: default
+spec:
+  selector:
+    app: kubernetes-dashboard
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubernetes-dashboard
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubernetes-dashboard-cluster-role
+rules:
+  - apiGroups: ["*"]
+    resources:
+      [
+        "namespaces",
+        "pods",
+        "services",
+        "nodes",
+        "endpoints",
+        "secrets",
+        "configmaps",
+        "persistentvolumeclaims",
+        "persistentvolumes",
+        "events",
+        "ingresses",
+        "componentstatuses",
+        "deployments",
+        "replicasets",
+        "daemonsets",
+        "statefulsets",
+      ]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kubernetes-dashboard-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
+    namespace: default

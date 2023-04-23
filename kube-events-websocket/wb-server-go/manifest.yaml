@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-connector
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: kube-connector
+  template:
+    metadata:
+      labels:
+        app: kube-connector
+    spec:
+      serviceAccount: kube-connector
+      containers:
+        - name: kube-connector
+          image: jilani1/kube-connector-go:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-connector-service
+  namespace: default
+spec:
+  selector:
+    app: kube-connector
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-connector
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-connector-cluster-role
+rules:
+  - apiGroups: ["*"]
+    resources:
+      [
+        "namespaces",
+        "pods",
+        "services",
+        "nodes",
+        "endpoints",
+        "secrets",
+        "configmaps",
+        "persistentvolumeclaims",
+        "persistentvolumes",
+        "events",
+        "ingresses",
+        "componentstatuses",
+        "deployments",
+        "replicasets",
+        "daemonsets",
+        "statefulsets",
+      ]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-connector-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube-connector-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: kube-connector
+    namespace: default

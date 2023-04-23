@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Kube-Events using WebSockets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        .new-event {
+            background-color: #ffcccc;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper blue-grey">
+            <a href="#" class="brand-logo center">Kube-Events using WebSockets</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <table class="highlight centered responsive-table">
+            <thead>
+                <tr>
+                    <th>TimeStamp</th>
+                    <th>Event</th>
+                    <th>Namespace</th>
+                    <th>Resource</th>
+                </tr>
+            </thead>
+            <tbody id="events-table">
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        const socket = new WebSocket('ws://kube-connector-service:8080');
+        socket.onmessage = function (event) {
+            const eventData = JSON.parse(event.data);
+            addRowToTable(eventData);
+        }
+        function addRowToTable(data) {
+            const tableBody = document.getElementById("events-table");
+
+            const newRow = document.createElement("tr");
+
+            const timestampCell = document.createElement("td");
+            const timestamp = new Date().toLocaleTimeString();
+            const timestampText = document.createTextNode(timestamp.toString());
+            timestampCell.appendChild(timestampText);
+
+            const eventCell = document.createElement("td");
+            const eventText = document.createTextNode(data.event_type);
+            eventCell.appendChild(eventText);
+
+            const namespaceCell = document.createElement("td");
+            const namespaceText = document.createTextNode(data.object.namespace);
+            namespaceCell.appendChild(namespaceText);
+
+            const resourceCell = document.createElement("td");
+            const resourceText = document.createTextNode(data.object.resource);
+            resourceCell.appendChild(resourceText);
+
+            newRow.appendChild(timestampCell);
+            newRow.appendChild(eventCell);
+            newRow.appendChild(namespaceCell);
+            newRow.appendChild(resourceCell);
+
+            tableBody.insertBefore(newRow, tableBody.firstChild);
+
+            newRow.classList.add("new-event");
+
+            setTimeout(() => {
+                newRow.classList.remove("new-event");
+            }, 2000);
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-events
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: kube-events
+  template:
+    metadata:
+      labels:
+        app: kube-events
+    spec:
+      serviceAccount: kube-events
+      containers:
+        - name: kube-events
+          image: jilani1/kube-events:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-events-service
+  namespace: default
+spec:
+  selector:
+    app: kube-events
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-events
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-events-cluster-role
+  namespace: default
+rules:
+  - apiGroups: ["*"]
+    resources:
+      [
+        "namespaces",
+        "pods",
+        "services",
+        "nodes",
+        "endpoints",
+        "secrets",
+        "configmaps",
+        "persistentvolumeclaims",
+        "persistentvolumes",
+        "events",
+        "ingresses",
+        "componentstatuses",
+        "deployments",
+        "replicasets",
+        "daemonsets",
+        "statefulsets",
+      ]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-events-cluster-role-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube-events-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: kube-events
+    namespace: default

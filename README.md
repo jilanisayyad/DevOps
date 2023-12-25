@@ -29,5 +29,5 @@ I will regularly update this repository with new code and examples as I publish 
 
 Thank you for visiting my GitHub repository! I hope you find the code and examples here useful for your own DevOps projects or learning journey.
 
-Linkedin: https://www.linkedin.com/in/jilani-sayyad-400b5a7
+Linkedin: www.linkedin.com/in/jilani-sayyad-400b5a71
 

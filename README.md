@@ -1,10 +1,10 @@
 # DevOps Blog Code Repository
 
-Welcome to my GitHub repository for storing the code associated with my Medium.com blogs on DevOps topics! I'm Jilani Sayyad. and I write blogs on Medium.com covering a wide range of tools and technologies related to DevOps practices.
+Welcome to my GitHub repository for storing the code associated on DevOps topics! I'm Jilani Sayyad and I write blogs covering a wide range of tools and technologies related to DevOps practices.
 
 ## About Me
 
-I am a DevOps Engineer, with a keen interest in DevOps practices, automation, and tooling. I'm passionate about sharing my knowledge and insights through my Medium.com blogs and accompanying code examples.
+I am a DevOps Engineer, with a keen interest in DevOps practices, automation, and tooling. I'm passionate about sharing my knowledge and insights through my Medium.com and Linkedin blogs and accompanying code examples.
 
 ## Repository Contents
 
@@ -25,7 +25,9 @@ Feel free to explore the contents of this repository and use the code in accorda
 
 ## Stay Updated
 
-I will regularly update this repository with new code and examples as I publish new blog posts on Medium.com. Make sure to check back for updates or follow me on Medium.com for notifications on new blog posts.
+I will regularly update this repository with new code and examples as I publish new blog posts on Linkedin. Make sure to check back for updates or follow me on Linkedin for notifications on new blog posts.
 
 Thank you for visiting my GitHub repository! I hope you find the code and examples here useful for your own DevOps projects or learning journey.
+
+Linkedin: https://www.linkedin.com/in/jilani-sayyad-400b5a7
 

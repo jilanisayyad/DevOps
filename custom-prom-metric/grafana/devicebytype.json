@@ -1,0 +1,104 @@
+{
+  "datasource": {
+    "type": "prometheus"
+  },
+  "fieldConfig": {
+    "defaults": {
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": null,
+            "color": "green"
+          },
+          {
+            "value": 80,
+            "color": "red"
+          }
+        ]
+      },
+      "unit": "short"
+    },
+    "overrides": []
+  },
+  "gridPos": {
+    "h": 18,
+    "w": 24,
+    "x": 0,
+    "y": 0
+  },
+  "id": 1,
+  "options": {
+    "reduceOptions": {
+      "values": false,
+      "calcs": [
+        "lastNotNull"
+      ],
+      "fields": ""
+    },
+    "orientation": "auto",
+    "textMode": "auto",
+    "wideLayout": true,
+    "colorMode": "value",
+    "graphMode": "area",
+    "justifyMode": "auto"
+  },
+  "targets": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "disableTextWrap": false,
+      "editorMode": "builder",
+      "expr": "devices_by_type{type=\"router\"}",
+      "fullMetaSearch": false,
+      "includeNullMetadata": true,
+      "instant": false,
+      "legendFormat": "__auto",
+      "range": true,
+      "refId": "A",
+      "useBackend": false,
+      "format": "time_series"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "disableTextWrap": false,
+      "editorMode": "builder",
+      "expr": "devices_by_type{type=\"switch\"}",
+      "fullMetaSearch": false,
+      "hide": false,
+      "includeNullMetadata": true,
+      "instant": false,
+      "legendFormat": "__auto",
+      "range": true,
+      "refId": "B",
+      "useBackend": false
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "disableTextWrap": false,
+      "editorMode": "builder",
+      "expr": "total_devices{app=\"device-manager\"}",
+      "fullMetaSearch": false,
+      "hide": false,
+      "includeNullMetadata": true,
+      "instant": false,
+      "legendFormat": "__auto",
+      "range": true,
+      "refId": "C",
+      "useBackend": false
+    }
+  ],
+  "title": "Devices by Type",
+  "type": "stat",
+  "pluginVersion": "10.2.3",
+  "description": "Devices dashboards"
+}

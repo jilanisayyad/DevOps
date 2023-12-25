@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  device-manager:
+    container_name: device-manager
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      REDIS_HOST: redis:6379
+      ENVIRONMENT: development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: always
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml
+      - ./grafana-dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./grafana/:/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    depends_on:
+      - device-manager
+
+  prometheus:
+    container_name: prometheus
+    restart: always
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - device-manager

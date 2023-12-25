@@ -4,6 +4,7 @@
 
 This repository focused on how to create custom metrics for Prometheus.
 Also, it contains a Grafana dashboard to visualize the metrics.
+This is for learning purposes only and everything is opensource.
 
 ## Prerequisites
 
@@ -17,7 +18,7 @@ Also, it contains a Grafana dashboard to visualize the metrics.
 
 ## How to create a custom metrics
 
-1. we create the golang application that will expose the metrics.
+1. we have created the golang application that will expose the metrics.
 2. it has two metrics: total_devices and device_by_type.
 3. Go structure:
 
